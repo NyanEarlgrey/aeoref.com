@@ -1,0 +1,11 @@
+{
+  "hosted-zone:account=492022549341:domainName=aeoref.com:privateZone=false:region=ap-northeast-1": {
+    "Id": "/hostedzone/Z06557983EQ60EAJ0FMZ6",
+    "Name": "aeoref.com."
+  },
+  "availability-zones:account=492022549341:region=ap-northeast-1": [
+    "ap-northeast-1a",
+    "ap-northeast-1c",
+    "ap-northeast-1d"
+  ]
+}
