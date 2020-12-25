@@ -45,6 +45,10 @@ export class AeorefComStack extends cdk.Stack {
     const aurora = new rds.ServerlessCluster(this, 'AuroraServerless', {
       engine: rds.DatabaseClusterEngine.AURORA_MYSQL,
       defaultDatabaseName: 'wordpress',
+      scaling: {
+        minCapacity: rds.AuroraCapacityUnit.ACU_1,
+        maxCapacity: rds.AuroraCapacityUnit.ACU_2
+      },
       vpc: cluster.vpc,
       securityGroups: [vpcSg],
     })
@@ -70,7 +74,7 @@ export class AeorefComStack extends cdk.Stack {
     })
     wpService.targetGroup.configureHealthCheck({ path: '/index.php' })
 
-    const wpScaling = wpService.service.autoScaleTaskCount({ maxCapacity: 10 })
+    const wpScaling = wpService.service.autoScaleTaskCount({ maxCapacity: 2, minCapacity: 1 })
     wpScaling.scaleOnMemoryUtilization('WpScaleByMemory', { targetUtilizationPercent: 75 })
     wpScaling.scaleOnCpuUtilization('WpScaleByCpu', { targetUtilizationPercent: 75 })
 
