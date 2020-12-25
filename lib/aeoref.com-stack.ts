@@ -70,9 +70,8 @@ export class AeorefComStack extends cdk.Stack {
       domainZone,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
       redirectHTTP: true,
-      healthCheckGracePeriod: cdk.Duration.seconds(2 ** 31 - 1),
     })
-    wpService.targetGroup.configureHealthCheck({ path: '/index.php' })
+    wpService.targetGroup.configureHealthCheck({ path: '/index.php', healthyHttpCodes: '200,302' })
 
     const wpScaling = wpService.service.autoScaleTaskCount({ maxCapacity: 2, minCapacity: 1 })
     wpScaling.scaleOnMemoryUtilization('WpScaleByMemory', { targetUtilizationPercent: 75 })
