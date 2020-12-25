@@ -33,6 +33,18 @@ export class AeorefComStack extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'Cluster', {
       clusterName: 'aeoref-cdk',
       containerInsights: true,
+      vpc: new ec2.Vpc(this, 'ClusterVpc', {
+        cidr: '10.0.0.0/16',
+        natGateways: 0,
+        maxAzs: 2,
+        subnetConfiguration: [
+          {
+            cidrMask: 18,
+            name: 'Public',
+            subnetType: ec2.SubnetType.PUBLIC,
+          }
+        ]
+      })
     })
     const vpcSg = new ec2.SecurityGroup(this, 'VpcSecurityGroup', {
       vpc: cluster.vpc,
@@ -50,6 +62,9 @@ export class AeorefComStack extends cdk.Stack {
         maxCapacity: rds.AuroraCapacityUnit.ACU_2
       },
       vpc: cluster.vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PUBLIC
+      },
       securityGroups: [vpcSg],
     })
     const wpService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'WPService', {
@@ -66,6 +81,7 @@ export class AeorefComStack extends cdk.Stack {
         logDriver: logging,
       },
       certificate,
+      assignPublicIp: true,
       domainName: `wp.${domainZone.zoneName}`,
       domainZone,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
