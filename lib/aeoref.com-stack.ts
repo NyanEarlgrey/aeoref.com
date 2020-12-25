@@ -86,6 +86,7 @@ export class AeorefComStack extends cdk.Stack {
       domainZone,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
       redirectHTTP: true,
+      healthCheckGracePeriod: cdk.Duration.seconds(180)
     })
     wpService.targetGroup.configureHealthCheck({ path: '/index.php', healthyHttpCodes: '200,302' })
 
